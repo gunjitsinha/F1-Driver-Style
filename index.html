@@ -11,13 +11,16 @@
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #121212; /* ✅ Dark mode background */
+            background-color: #121212; /* ✅ Dark background */
             color: #ffffff; /* ✅ White text */
         }
         #chart-container {
             width: 90%;
             height: 700px;
             margin: auto;
+        }
+        h1, p {
+            color: #ffffff; /* ✅ Ensure headings & text remain visible */
         }
     </style>
 </head>
@@ -45,12 +48,12 @@
                 mode: "lines+markers",
                 type: "scatter3d",
                 name: driver.name,
-                line: { width: 5 },
-                marker: { size: 6 },
+                line: { width: 4, color: "#00bfff" }, /* ✅ Cyan lines */
+                marker: { size: 5, color: "#ff4500" }, /* ✅ Orange dots */
                 visible: "legendonly"  // Default: Hidden until selected
             }));
 
-            // ✅ Create the 3D graph with dark mode
+            // ✅ Create the 3D graph with proper dark mode
             let layout = {
                 scene: {
                     xaxis: {
@@ -58,23 +61,39 @@
                         tickvals: race_positions,
                         ticktext: race_names,
                         tickangle: -45,
-                        color: "#ffffff"  // ✅ White text for dark mode
+                        color: "#ffffff", /* ✅ White axis labels */
+                        gridcolor: "#444444", /* ✅ Dark grid */
+                        showbackground: true,
+                        backgroundcolor: "#222222"
                     },
                     yaxis: {
                         title: "Attack Index (Aggression)",
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        gridcolor: "#444444",
+                        showbackground: true,
+                        backgroundcolor: "#222222"
                     },
                     zaxis: {
                         title: "Finesse Factor (Smoothness)",
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        gridcolor: "#444444",
+                        showbackground: true,
+                        backgroundcolor: "#222222"
                     }
                 },
-                title: "F1 Driver Performance Over Time",
+                title: {
+                    text: "F1 Driver Performance Over Time",
+                    font: { color: "#ffffff" }
+                },
                 width: 1500,
                 height: 900,
-                paper_bgcolor: "#121212",  // ✅ Dark mode background
+                paper_bgcolor: "#121212", /* ✅ Full dark mode */
                 plot_bgcolor: "#121212",
-                font: { color: "#ffffff" }
+                font: { color: "#ffffff" },
+                legend: {
+                    font: { color: "#ffffff" }, /* ✅ White legend */
+                    bgcolor: "#222222"
+                }
             };
 
             Plotly.newPlot("chart-container", traces, layout);
