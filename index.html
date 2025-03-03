@@ -11,17 +11,19 @@
             text-align: center;
             margin: 0;
             padding: 20px;
+            background-color: #121212; /* ✅ Dark mode background */
+            color: #ffffff; /* ✅ White text */
         }
         #chart-container {
             width: 90%;
-            height: 700px; /* ✅ Increased height */
+            height: 700px;
             margin: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Interactive 3D F1 Driver Progression</h1>
-    <p>Click on a driver in the legend to highlight their performance.</p>
+    <h1>F1 Driver Progression Over Time</h1>
+    <p>Select a driver from the legend to highlight their performance.</p>
     <div id="chart-container"></div>
 
     <script>
@@ -29,6 +31,11 @@
             // ✅ Load the JSON data
             const response = await fetch("graph_data.json");
             const data = await response.json();
+
+            // ✅ Extract race mapping for x-axis labels
+            let race_mapping = data.race_mapping;
+            let race_positions = Object.values(race_mapping); // Sorted positions
+            let race_names = Object.keys(race_mapping); // Sorted names
 
             // ✅ Prepare traces for each driver
             let traces = data.drivers.map(driver => ({
@@ -43,16 +50,31 @@
                 visible: "legendonly"  // Default: Hidden until selected
             }));
 
-            // ✅ Create the 3D graph
+            // ✅ Create the 3D graph with dark mode
             let layout = {
                 scene: {
-                    xaxis: { title: "Race (Time)" },
-                    yaxis: { title: "Attack Index (Aggression)" },
-                    zaxis: { title: "Finesse Factor (Smoothness)" }
+                    xaxis: {
+                        title: "Race",
+                        tickvals: race_positions,
+                        ticktext: race_names,
+                        tickangle: -45,
+                        color: "#ffffff"  // ✅ White text for dark mode
+                    },
+                    yaxis: {
+                        title: "Attack Index (Aggression)",
+                        color: "#ffffff"
+                    },
+                    zaxis: {
+                        title: "Finesse Factor (Smoothness)",
+                        color: "#ffffff"
+                    }
                 },
                 title: "F1 Driver Performance Over Time",
-                width: 1400,
-                height: 900
+                width: 1500,
+                height: 900,
+                paper_bgcolor: "#121212",  // ✅ Dark mode background
+                plot_bgcolor: "#121212",
+                font: { color: "#ffffff" }
             };
 
             Plotly.newPlot("chart-container", traces, layout);
