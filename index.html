@@ -4,23 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F1 Driver Progression</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- ✅ Load Plotly -->
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 0;
+            padding: 20px;
         }
-        iframe {
+        #chart-container {
             width: 90%;
-            height: 90vh;
-            border: none;
+            height: 700px; /* ✅ Increased height */
+            margin: auto;
         }
     </style>
 </head>
 <body>
     <h1>Interactive 3D F1 Driver Progression</h1>
-    <p>Select a driver from the legend to highlight their performance.</p>
-    <iframe src="graph.html"></iframe>
+    <p>Click on a driver in the legend to highlight their performance.</p>
+    <div id="chart-container"></div>
+
+    <script>
+        async function loadGraph() {
+            // ✅ Load the JSON data
+            const response = await fetch("graph_data.json");
+            const data = await response.json();
+
+            // ✅ Prepare traces for each driver
+            let traces = data.drivers.map(driver => ({
+                x: driver.x,
+                y: driver.y,
+                z: driver.z,
+                mode: "lines+markers",
+                type: "scatter3d",
+                name: driver.name,
+                line: { width: 5 },
+                marker: { size: 6 },
+                visible: "legendonly"  // Default: Hidden until selected
+            }));
+
+            // ✅ Create the 3D graph
+            let layout = {
+                scene: {
+                    xaxis: { title: "Race (Time)" },
+                    yaxis: { title: "Attack Index (Aggression)" },
+                    zaxis: { title: "Finesse Factor (Smoothness)" }
+                },
+                title: "F1 Driver Performance Over Time",
+                width: 1400,
+                height: 900
+            };
+
+            Plotly.newPlot("chart-container", traces, layout);
+        }
+
+        // ✅ Load the graph when the page is ready
+        loadGraph();
+    </script>
 </body>
 </html>
